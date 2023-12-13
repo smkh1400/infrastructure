@@ -1,4 +1,4 @@
-module github.com/masihbr/go_rand
+module github.com/somedude/go_rand
 
 go 1.17
 
