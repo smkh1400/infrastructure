@@ -1,5 +1,6 @@
 version: "3.9"
 
+
 services:
   client:
     build: ./nginx
@@ -8,11 +9,40 @@ services:
     depends_on:
       - django_server
       - go_server
+    networks:
+      - nginx_network
 
   django_server:
     build: ./django
-    # TODO PART 1
+    deploy: 
+      replicas: ${DJANGO_REPLICAS:-1}
+      resources:
+        limits:
+          cpus: ${DJANGO_CPUS}
+          memory: ${DJANGO_MEMORY}
+    environment:
+      - DJANGO_REPLICAS=${DJANGO_REPLICAS}
+      - DJANGO_MEMORY=${DJANGO_MEMORY}
+      - DJANGO_CPUS=${DJANGO_CPUS}
+    networks:
+      - nginx_network
 
   go_server:
     build: ./go
-    # TODO PART 2
+    deploy: 
+      replicas: ${GO_REPLICAS:-1}
+      resources:
+        limits:
+          cpus: ${GO_CPUS}
+          memory: ${GO_MEMORY}
+    environment:
+      - GO_REPLICAS=${GO_REPLICAS}
+      - GO_MEMORY=${GO_MEMORY}
+      - GO_CPUS=${GO_CPUS}
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
+
